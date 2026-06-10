@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Post, Category } from '../types';
-import { Search, Calendar, User, Eye, ArrowLeft, Share2, Award, Clock, MessageSquare, Send, ShieldCheck, HelpCircle, Facebook, Twitter, MessageCircle, Check, Link2, Printer, Rss } from 'lucide-react';
+import { Search, Calendar, User, Eye, ArrowLeft, Share2, Award, Clock, MessageSquare, Send, ShieldCheck, HelpCircle, Facebook, Twitter, MessageCircle, Check, Link2, Printer, Rss, Pin } from 'lucide-react';
 import OptimizedImage from '../components/OptimizedImage';
 import { calculateReadingTime } from '../utils/readingTime';
 import AuthorBio from '../components/AuthorBio';
@@ -113,6 +113,11 @@ export default function BeritaList({ posts, categories, selectedPost, onSelectPo
                           post.content.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'SEMUA' || post.category_id === selectedCategory;
     return matchesSearch && matchesCategory;
+  }).sort((a, b) => {
+    const pinA = a.is_pinned ? 1 : 0;
+    const pinB = b.is_pinned ? 1 : 0;
+    if (pinA !== pinB) return pinB - pinA; // Pinned first
+    return new Date(b.published_at).getTime() - new Date(a.published_at).getTime(); // Newest first
   });
 
   const handleReadPost = (post: Post) => {
@@ -732,14 +737,28 @@ export default function BeritaList({ posts, categories, selectedPost, onSelectPo
                 <article 
                   key={post.id} 
                   onClick={() => handleReadPost(post)}
-                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-850 overflow-hidden shadow-xs hover:shadow-lg transition-all flex flex-col h-full cursor-pointer group"
+                  className={`bg-white dark:bg-slate-900 rounded-2xl border overflow-hidden shadow-xs hover:shadow-lg transition-all flex flex-col h-full cursor-pointer group relative ${
+                    post.is_pinned 
+                      ? 'border-amber-400/80 dark:border-amber-500/50 ring-2 ring-amber-400/10 dark:ring-amber-450/5' 
+                      : 'border-slate-100 dark:border-slate-850'
+                  }`}
                 >
                   <div className="relative h-48 bg-slate-100 dark:bg-slate-800 overflow-hidden">
                     <OptimizedImage src={post.thumbnail_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                    <span className="absolute top-4 left-4 bg-emerald-800 text-white text-[9px] font-extrabold px-2.5 py-1 rounded">
+                    
+                    {/* Category overlay */}
+                    <span className="absolute top-4 left-4 bg-emerald-800 text-white text-[9px] font-extrabold px-2.5 py-1 rounded select-none z-10">
                       {matchedCategory ? matchedCategory.name : "Warta"}
                     </span>
-                    <span className="absolute bottom-4 left-4 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded tracking-wide font-mono">
+
+                    {/* Pinned overlay badge */}
+                    {post.is_pinned && (
+                      <span className="absolute top-4 right-4 bg-amber-500 text-white text-[9px] font-bold px-2.5 py-1 rounded-md flex items-center gap-1 shadow-md z-10 animate-pulse">
+                        <Pin className="w-3 h-3 fill-white" /> PINNED
+                      </span>
+                    )}
+
+                    <span className="absolute bottom-4 left-4 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded tracking-wide font-mono z-10">
                       {post.views} Dilihat
                     </span>
                   </div>

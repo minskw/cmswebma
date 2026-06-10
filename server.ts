@@ -10,6 +10,10 @@ import { generateSitemapXml } from './src/utils/sitemap';
 import { generateRssXml, generateAtomXml } from './src/utils/rss';
 import { initialPosts, initialAnnouncements, initialEvents, initialCategories } from './src/data/initialData';
 import { getDatabaseState, saveDatabaseState, saveDatabaseKey } from './src/database/serverDb';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();

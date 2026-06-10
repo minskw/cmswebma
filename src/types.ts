@@ -73,6 +73,7 @@ export interface Post {
   tags: string[];
   status: 'draft' | 'publish' | 'schedule';
   views: number;
+  is_pinned?: boolean;
   published_at: string;
   author_id: string;
   author_name: string;

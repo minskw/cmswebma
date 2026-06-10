@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { FileText, Plus, Search, Trash, Edit, Save, ArrowLeft, Globe, Share2, AlertCircle, FolderOpen, Tag } from 'lucide-react';
+import { FileText, Plus, Search, Trash, Edit, Save, ArrowLeft, Globe, Share2, AlertCircle, FolderOpen, Tag, Pin } from 'lucide-react';
 import { Post, Category } from '../types';
 import RichTextEditor from './RichTextEditor';
 import MockDb from '../database/mockDb';
@@ -365,6 +365,28 @@ export default function CmsNewsSection({
             </div>
           </div>
 
+          {/* Sematkan Berita (Pinned News Option) */}
+          <div className="bg-amber-50/40 dark:bg-amber-950/10 border border-amber-200/50 dark:border-amber-900/30 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center">
+                <Pin className="w-4 h-4 fill-white" />
+              </div>
+              <div className="text-left">
+                <h4 className="text-xs font-bold text-amber-950 dark:text-amber-350 uppercase tracking-tight">Sematkan Artikel Berita (Pinned News)</h4>
+                <p className="text-[10px] text-amber-700/80 dark:text-amber-500">Berita penting terpilih akan selalu ditampilkan di paling atas daftar berita.</p>
+              </div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer select-none">
+              <input 
+                type="checkbox" 
+                checked={!!editPost.is_pinned}
+                onChange={(e) => setEditPost({ ...editPost, is_pinned: e.target.checked })}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-205 dark:bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+            </label>
+          </div>
+
           {/* SEO and Social Open Graph Metadata */}
           <div className="p-4.5 bg-slate-50 border rounded-xl space-y-4">
             <h5 className="text-[10.5px] font-black text-rose-800 uppercase tracking-widest flex items-center gap-1.5 border-b pb-1.5">
@@ -580,7 +602,16 @@ export default function CmsNewsSection({
                           <td className="p-4 font-bold text-slate-800 text-xs">
                             <div className="flex items-center gap-3">
                               <img src={post.thumbnail_url} className="w-10 h-8 object-cover rounded border border-slate-100 shrink-0" alt="" />
-                              <span className="line-clamp-1">{post.title}</span>
+                              <div className="flex flex-col min-w-0">
+                                <span className="line-clamp-1 flex items-center gap-1.5 flex-wrap">
+                                  {post.is_pinned && (
+                                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-500 text-white text-[9px] font-bold rounded-sm shrink-0">
+                                      <Pin className="w-2.5 h-2.5 fill-white" /> PIN
+                                    </span>
+                                  )}
+                                  <span>{post.title}</span>
+                                </span>
+                              </div>
                             </div>
                           </td>
                           <td className="p-4">

@@ -255,6 +255,7 @@ export const initialPosts: Post[] = [
     tags: ["ppdb-2026", "madrasah"],
     status: "publish",
     views: 452,
+    is_pinned: true,
     published_at: "2026-06-08T08:00:00Z",
     author_id: "u1",
     author_name: "Ahmad Subagio, S.Pd.",
