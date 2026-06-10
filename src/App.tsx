@@ -25,7 +25,27 @@ const DownloadPage = lazy(() => import('./pages/Download'));
 const CmsAdmin = lazy(() => import('./pages/CmsAdmin'));
 import { useDynamicSeo } from './hooks/useDynamicSeo';
 
-const getNormalizedPathAndHashOfRoute = (pathname: string, hash: string): { route: string; adminSubTab?: string } => {
+const getCleanPathname = (pathname: string): string => {
+  const segments = pathname.split('/').filter(Boolean);
+  
+  if (segments.includes('admin') || segments.includes('cms')) {
+    const adminIdx = segments.indexOf('admin') !== -1 ? segments.indexOf('admin') : segments.indexOf('cms');
+    return '/' + segments.slice(adminIdx).join('/');
+  }
+  
+  const knownRoutes = ['profil', 'akademik', 'kesiswaan', 'berita', 'galeri', 'download', 'cms', 'admin'];
+  for (const route of knownRoutes) {
+    const idx = segments.findIndex(seg => seg === route || seg.startsWith(route + '_'));
+    if (idx !== -1) {
+      return '/' + segments.slice(idx).join('/');
+    }
+  }
+  
+  return '/';
+};
+
+const getNormalizedPathAndHashOfRoute = (rawPathname: string, hash: string): { route: string; adminSubTab?: string } => {
+  const pathname = getCleanPathname(rawPathname);
   // 1. Check if the URL targets the admin/cms route
   const isAdminPath = pathname === '/admin' || pathname === '/cms' || pathname.startsWith('/admin/') || pathname.startsWith('/cms/');
   const isAdminHash = hash.startsWith('#/admin') || hash.startsWith('#admin') || hash.startsWith('#/cms') || hash.startsWith('#cms');
@@ -84,14 +104,15 @@ export default function App() {
       const { route, adminSubTab } = getNormalizedPathAndHashOfRoute(window.location.pathname, window.location.hash);
       
       // Safety redirect: rewrite the primary URL to a safe hash-based URL immediately to bypass hosting platform redirection/404 constraints
-      const pathname = window.location.pathname;
+      const rawPathname = window.location.pathname;
+      const pathname = getCleanPathname(rawPathname);
       if (pathname === '/admin' || pathname === '/cms' || pathname.startsWith('/admin/') || pathname.startsWith('/cms/')) {
         const targetHash = adminSubTab ? `#/admin/${adminSubTab}` : `#/admin/ikhtisar`;
-        window.history.replaceState(null, '', `/${targetHash}`);
+        window.history.replaceState(null, '', targetHash);
       } else if (pathname !== '/' && pathname.length > 1) {
         const cleanP = pathname.replace(/^\//, '').split('?')[0].replace(/\/$/, '');
         if (cleanP && cleanP !== 'admin' && cleanP !== 'cms' && !window.location.hash) {
-          window.history.replaceState(null, '', `/#/${cleanP}`);
+          window.history.replaceState(null, '', `#/${cleanP}`);
         }
       }
       
@@ -280,13 +301,13 @@ export default function App() {
       window.location.hash = '/admin/ikhtisar';
     } else if (newPath === 'home') {
       try {
-        window.history.pushState({}, '', '/#/');
+        window.history.pushState({}, '', '#/');
       } catch (e) {
         window.location.hash = '/';
       }
     } else {
       try {
-        window.history.pushState({}, '', `/#/${newPath}`);
+        window.history.pushState({}, '', `#/${newPath}`);
       } catch (e) {
         window.location.hash = `/${newPath}`;
       }
