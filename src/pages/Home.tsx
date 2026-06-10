@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SchoolSettings, Post, Event, Program, Achievement, Testimonial, GalleryItem, Announcement } from '../types';
-import { Calendar, Award, BookOpen, Clock, Heart, ArrowRight, Video, ChevronRight, Play, Users, Landmark, FileCheck, Star, Sparkles, MessageSquare, PhoneCall, HelpCircle, MapPin, Search } from 'lucide-react';
+import { Calendar, Award, BookOpen, Clock, Heart, ArrowRight, Video, ChevronRight, Play, Users, Landmark, FileCheck, Star, Sparkles, MessageSquare, PhoneCall, HelpCircle, MapPin, Search, GraduationCap, ClipboardCheck, UserPlus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import OptimizedImage from '../components/OptimizedImage';
 import TestimonialCarousel from '../components/TestimonialCarousel';
@@ -42,6 +42,57 @@ export default function Home({
   const [activeSlide, setActiveSlide] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [showTestimonialForm, setShowTestimonialForm] = useState(false);
+  
+  // Quick Action States
+  const [activeQuickAction, setActiveQuickAction] = useState<'kelulusan' | 'ujian' | 'psb' | null>(null);
+  const [searchRegNumber, setSearchRegNumber] = useState('');
+  const [searchResult, setSearchResult] = useState<any>(null);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const handleSearchKelulusan = (e: React.FormEvent) => {
+    e.preventDefault();
+    setHasSearched(true);
+    const reg = searchRegNumber.trim().toUpperCase();
+    
+    // Realistic seeded database of applicants
+    const db: Record<string, any> = {
+      'PPDB-2026-001': {
+        name: 'Ahmad Fauzan',
+        nisn: '3148920199',
+        status: 'LULUS',
+        class: 'Kelas I-A (Tahfidz Unggulan)',
+        message: 'Selamat! Calon siswa bersangkutan dinyatakan LULUS SELEKSI utama. Silakan lakukan pendaftaran ulang fisik pada tanggal 15–20 Juni 2026 ke Sekretariat Satu Atap MIN Singkawang.'
+      },
+      'PPDB-2026-002': {
+        name: 'Siti Aisyah',
+        nisn: '3147819202',
+        status: 'LULUS',
+        class: 'Kelas I-B (Sains-Tekno Dasar)',
+        message: 'Selamat! Calon siswa bersangkutan dinyatakan LULUS SELEKSI utama. Silakan lakukan pendaftaran ulang fisik pada tanggal 15–20 Juni 2026 ke Sekretariat Satu Atap MIN Singkawang.'
+      },
+      'PPDB-2026-003': {
+        name: 'Rizky Alamsyah',
+        nisn: '3145592810',
+        status: 'CADANGAN',
+        class: 'Cadangan Kelas I (Antrean #02)',
+        message: 'Status: CADANGAN. Calon siswa berada dalam daftar tunggu utama. Hubungi panitia PPDB jika ada kuota kosong setelah tanggal rilis daftar ulang fisik.'
+      }
+    };
+
+    if (db[reg]) {
+      setSearchResult(db[reg]);
+    } else {
+      // Support searching by name partially too
+      const matchedKey = Object.keys(db).find(k => 
+        db[k].name.toUpperCase().includes(reg)
+      );
+      if (matchedKey) {
+        setSearchResult(db[matchedKey]);
+      } else {
+        setSearchResult(null);
+      }
+    }
+  };
 
   const defaultSlides = [
     {
@@ -274,6 +325,104 @@ export default function Home({
               <h3 className="text-2xl font-extrabold text-slate-900 leading-none mt-1">126+</h3>
               <p className="text-[9px] text-slate-500 mt-1">Tingkat Kota s.d. Nasional</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2.5 SECTION 2.5: PERSISTENT INTERACTIVE QUICK ACTIONS PANEL */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-1 pb-4 relative z-30" id="home_quick_actions_panel">
+        <div className="bg-white border border-slate-100 dark:border-slate-800 rounded-3xl p-6 shadow-sm text-left">
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-100 pb-4">
+            <div>
+              <span className="text-emerald-700 font-extrabold text-[11px] uppercase tracking-widest block">Layanan Cepat</span>
+              <h3 className="text-slate-900 font-black text-xl tracking-tight leading-none mt-1">Layanan Portal Quick Action</h3>
+            </div>
+            <p className="text-[11px] text-slate-500 max-w-sm sm:text-right font-sans">
+              Akses cepat fitur prioritas tinggi, jadwal kegiatan berkala, rilis hasil seleksi PPDB, dan brosur pendaftaran.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Action Card 1 */}
+            <button
+              onClick={() => {
+                setActiveQuickAction('kelulusan');
+                setHasSearched(false);
+                setSearchRegNumber('');
+                setSearchResult(null);
+              }}
+              className="group text-left p-5 bg-slate-50/50 hover:bg-emerald-50/30 border border-slate-100 hover:border-emerald-250 rounded-2xl transition-all cursor-pointer shadow-3xs"
+            >
+              <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-100 group-hover:scale-105 transition-transform shrink-0">
+                <GraduationCap className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-xs text-slate-900 uppercase tracking-tight mt-4 group-hover:text-emerald-800 transition-colors">
+                Cek Kelulusan
+              </h4>
+              <p className="text-[10.5px] text-slate-500 leading-relaxed font-sans mt-1.5 min-h-[40px]">
+                Lihat pengumuman berkala kelulusan verifikasi administrasi PPDB.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-[10px] text-orange-600 hover:underline font-bold mt-2.5 uppercase tracking-wide">
+                Buka Cek Hasil →
+              </span>
+            </button>
+
+            {/* Action Card 2 */}
+            <button
+              onClick={() => setActiveQuickAction('ujian')}
+              className="group text-left p-5 bg-slate-50/50 hover:bg-emerald-50/30 border border-slate-100 hover:border-emerald-250 rounded-2xl transition-all cursor-pointer shadow-3xs"
+            >
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 group-hover:scale-105 transition-transform shrink-0">
+                <ClipboardCheck className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-xs text-slate-900 uppercase tracking-tight mt-4 group-hover:text-emerald-800 transition-colors">
+                Jadwal Ujian
+              </h4>
+              <p className="text-[10.5px] text-slate-500 leading-relaxed font-sans mt-1.5 min-h-[40px]">
+                Akses kalender pelaksanaan ujian sumatif tengah & akhir semester CBT.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-[10px] text-indigo-650 hover:underline font-bold mt-2.5 uppercase tracking-wide">
+                Lihat Jadwal →
+              </span>
+            </button>
+
+            {/* Action Card 3 */}
+            <button
+              onClick={() => setActiveQuickAction('psb')}
+              className="group text-left p-5 bg-slate-50/50 hover:bg-emerald-50/30 border border-slate-100 hover:border-emerald-250 rounded-2xl transition-all cursor-pointer shadow-3xs"
+            >
+              <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100 group-hover:scale-105 transition-transform shrink-0">
+                <UserPlus className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-xs text-slate-900 uppercase tracking-tight mt-4 group-hover:text-emerald-800 transition-colors">
+                Info PSB / PPDB
+              </h4>
+              <p className="text-[10.5px] text-slate-500 leading-relaxed font-sans mt-1.5 min-h-[40px]">
+                Eksplorasi langkah syarat pendaftaran baru online secara gratis.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-[10px] text-sky-600 hover:underline font-bold mt-2.5 uppercase tracking-wide">
+                Lihat Panduan →
+              </span>
+            </button>
+
+            {/* Action Card 4 */}
+            <button
+              onClick={() => onNavigate('download')}
+              className="group text-left p-5 bg-slate-50/50 hover:bg-emerald-50/30 border border-slate-100 hover:border-emerald-250 rounded-2xl transition-all cursor-pointer shadow-3xs"
+            >
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 group-hover:scale-105 transition-transform shrink-0">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-xs text-slate-900 uppercase tracking-tight mt-4 group-hover:text-emerald-800 transition-colors">
+                Unduh Brosur
+              </h4>
+              <p className="text-[10.5px] text-slate-500 leading-relaxed font-sans mt-1.5 min-h-[40px]">
+                Unduh berkas cetak brosur, leaflet pendaftaran, dan formulir manual.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-[10px] text-emerald-700 hover:underline font-bold mt-2.5 uppercase tracking-wide">
+                Buka Unduhan →
+              </span>
+            </button>
           </div>
         </div>
       </section>
@@ -781,6 +930,330 @@ export default function Home({
           </div>
         </div>
       </section>
+
+      {/* QUICK ACTIONS INTERACTIVE MODALS OVERLAYS */}
+      <AnimatePresence>
+        {activeQuickAction === 'kelulusan' && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-100 p-4 bg-black/80 backdrop-blur-xs flex justify-center items-center text-left" 
+            id="modal_cek_kelulusan"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              className="relative w-full max-w-xl bg-white rounded-2xl p-6 md:p-8 shadow-2xl border border-slate-100 text-slate-900"
+            >
+              <button 
+                onClick={() => setActiveQuickAction(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
+                aria-label="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 shrink-0">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 text-base leading-tight">Cek Hasil Kelulusan Seleksi PPDB</h3>
+                  <p className="text-[10.5px] text-slate-400 mt-0.5 font-sans">MIN Singkawang Tahun Pelajaran 2026/2027</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleSearchKelulusan} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide mb-1.5 font-sans">No. Registrasi / Nama Calon Siswa</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="Contoh: PPDB-2026-001 ATAU Ahmad Fauzan" 
+                      value={searchRegNumber}
+                      onChange={(e) => setSearchRegNumber(e.target.value)}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-xs font-sans text-slate-800 placeholder:text-slate-400 focus:outline-hidden focus:border-emerald-600"
+                    />
+                    <button 
+                      type="submit" 
+                      className="px-5 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold text-xs rounded-lg transition-all uppercase shrink-0 cursor-pointer"
+                    >
+                      Cek Hasil
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-2 leading-relaxed font-sans">
+                    Gunakan nomor registrasi yang tertera di kartu bukti pendaftaran online Anda (coba ketik <strong className="font-bold underline text-slate-700 font-mono">PPDB-2026-001</strong> ATAU <strong className="font-bold underline text-slate-700 font-sans">PPDB-2026-002</strong> ATAU <strong className="font-bold underline text-slate-700 font-sans">Siti Aisyah</strong> untuk simulasi kelulusan).
+                  </p>
+                </div>
+              </form>
+
+              {hasSearched && (
+                <div className="mt-6 border-t border-slate-100 pt-5 animate-fade-in text-xs font-sans">
+                  {searchResult ? (
+                    <div className="bg-emerald-50/50 border border-emerald-250/50 rounded-xl p-5 space-y-3.5">
+                      <div className="flex justify-between items-center pb-2.5 border-b border-emerald-100/40">
+                        <span className="text-[10px] font-mono text-emerald-800 font-extrabold tracking-wider">BUKTI SELEKSI RESMI</span>
+                        <span className={`px-2.5 py-1 text-[10px] font-black rounded-full uppercase tracking-wider ${
+                          searchResult.status === 'LULUS' 
+                            ? 'bg-emerald-700 text-white' 
+                            : 'bg-amber-505 text-amber-950 bg-amber-100'
+                        }`}>
+                          {searchResult.status}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-left">
+                        <div>
+                          <p className="text-[10px] text-slate-400 uppercase font-bold">Nama Calon Siswa</p>
+                          <p className="font-black text-slate-900 text-xs mt-0.5">{searchResult.name}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-slate-400 uppercase font-bold">NISN Terdaftar</p>
+                          <p className="font-bold text-slate-800 text-xs mt-0.5">{searchResult.nisn}</p>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-3 rounded-lg border border-slate-150 text-left">
+                        <p className="text-[10px] text-slate-400 uppercase font-bold">Penempatan Kelas Pemetaan</p>
+                        <p className="font-black text-emerald-800 text-xs mt-0.5">{searchResult.class}</p>
+                      </div>
+
+                      <p className="text-slate-600 text-xs mt-2 italic leading-relaxed text-left">
+                        "{searchResult.message}"
+                      </p>
+
+                      <div className="pt-2 flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => window.print()}
+                          className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-[10.5px] font-bold transition-all uppercase cursor-pointer"
+                        >
+                          Cetak Bukti (PDF)
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-rose-50/50 border border-rose-200/50 rounded-xl p-5 text-center space-y-2">
+                      <span className="text-rose-700 font-black text-xs uppercase block tracking-wider">Data Tidak Ditemukan</span>
+                      <p className="text-slate-500 leading-relaxed text-[11px] max-w-sm mx-auto">
+                        Maaf, nomor registrasi atau nama yang dimasukkan tidak terdaftar di basis kelulusan utama. Periksalah penulisan huruf besar/kecil s.d digit kode Anda.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end pt-2 border-t border-slate-100">
+                <button 
+                  onClick={() => setActiveQuickAction(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer uppercase tracking-wider"
+                >
+                  Tutup
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {activeQuickAction === 'ujian' && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-100 p-4 bg-black/80 backdrop-blur-xs flex justify-center items-center text-left" 
+            id="modal_jadwal_ujian"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              className="relative w-full max-w-2xl bg-white rounded-2xl p-6 md:p-8 shadow-2xl border border-slate-100 text-slate-900"
+            >
+              <button 
+                onClick={() => setActiveQuickAction(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
+                aria-label="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="flex items-center gap-2.5 mb-5 border-b border-slate-100 pb-4">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 shrink-0">
+                  <ClipboardCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 text-base leading-tight">Jadwal Evaluasi & Asesmen Akademik</h3>
+                  <p className="text-[10.5px] text-slate-405 mt-0.5 font-sans">Tahun Pelajaran Berjalan MIN Singkawang</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-xs font-sans">
+                <p className="text-slate-550 leading-relaxed text-[11px]">
+                  Evaluasi dan sumatif diselenggarakan secara transparan menggunakan Computer-Assisted Test (CBT) berbasis e-learning terpadu madrasah demi menunjang kampanye ramah lingkungan tanpa kertas.
+                </p>
+
+                {/* Jadwal Table Layout */}
+                <div className="overflow-x-auto border border-slate-150 rounded-xl bg-slate-50/50">
+                  <table className="w-full text-xs text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-105/85 border-b border-slate-150 text-slate-600 font-extrabold uppercase text-[10px]">
+                        <th className="p-3">Nama Evaluasi</th>
+                        <th className="p-3">Pelaksanaan</th>
+                        <th className="p-3">Sifat / Media</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-150 text-slate-700">
+                      <tr>
+                        <td className="p-3 font-bold text-slate-900 text-[11px]">Asesmen Tengah Semester (ATS) Ganjil</td>
+                        <td className="p-3 font-mono">21 - 26 September 2026</td>
+                        <td className="p-3 text-[11px]">Digital CBT (Gawai Mandiri)</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-bold text-slate-900 text-[11px]">Asesmen Sumatif Akhir Semester (ASAS) Ganjil</td>
+                        <td className="p-3 font-mono">30 November - 5 Desember 2026</td>
+                        <td className="p-3 text-[11px]">CBT Sekolah Terpusat</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-bold text-slate-900 text-[11px]">Asesmen Tengah Semester (ATS) Genap</td>
+                        <td className="p-3 font-mono">1 - 6 Maret 2027</td>
+                        <td className="p-3 text-[11px]">Digital CBT (Gawai Mandiri)</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-bold text-slate-900 text-[11px]">Asesmen Madrasah (AM) Utama Kelas VI</td>
+                        <td className="p-3 font-mono">3 - 8 Mei 2027</td>
+                        <td className="p-3 text-[11px]">CBT Smartroom Integrasi</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-bold text-slate-900 text-[11px]">Asesmen Akhir Tahun (AAT) Genap</td>
+                        <td className="p-3 font-mono">7 - 12 Juni 2027</td>
+                        <td className="p-3 text-[11px]">CBT Sekolah Terpusat</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="bg-amber-50/70 border border-amber-200 p-4 rounded-xl text-slate-800">
+                  <p className="font-bold mb-1.5 uppercase tracking-wide text-[10px] text-amber-900 font-sans">Petunjuk Penting Ujian:</p>
+                  <ul className="list-disc list-inside space-y-1 text-[10.5px] font-sans leading-relaxed text-slate-600">
+                    <li>Kartu peserta ujian digital wajib ditempel pada meja ujian/layar perangkat masing-masing anak.</li>
+                    <li>Sebelum ujian dimulai, mintalah token ujian kepada pengawas ruangan guru pendidik yang bersertifikat.</li>
+                    <li>Apabila terjadi error gawai selama ujian, silakan lapor proktor ruangan untuk diganti ke laptop cadangan madrasah.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-6.5 flex justify-between border-t border-slate-100 pt-4.5">
+                <button 
+                  onClick={() => { setActiveQuickAction(null); onNavigate('akademik_kalender'); }}
+                  className="text-[11px] font-bold text-emerald-800 hover:underline uppercase flex items-center gap-1 cursor-pointer bg-transparent border-0"
+                >
+                  Lihat Kalender Akademik →
+                </button>
+                <button 
+                  onClick={() => setActiveQuickAction(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer uppercase tracking-wider"
+                >
+                  Tutup
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {activeQuickAction === 'psb' && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-100 p-4 bg-black/80 backdrop-blur-xs flex justify-center items-center text-left" 
+            id="modal_info_ppdb"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              className="relative w-full max-w-xl bg-white rounded-2xl p-6 md:p-8 shadow-2xl border border-slate-100 text-slate-900"
+            >
+              <button 
+                onClick={() => setActiveQuickAction(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
+                aria-label="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="flex items-center gap-2.5 mb-5 border-b border-slate-100 pb-4">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 shrink-0">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 text-base leading-tight">Pusat Informasi PPDB / PSB</h3>
+                  <p className="text-[10.5px] text-slate-405 mt-0.5 font-sans">Penerimaan Siswa Baru MIN Singkawang</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-xs font-sans">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl">
+                    <p className="text-[10px] text-slate-400 uppercase font-black">Rencana Kuota Rombel</p>
+                    <p className="text-sm font-extrabold text-emerald-800 mt-0.5">3 Rombongan Belajar</p>
+                    <p className="text-[9.5px] text-slate-450 mt-0.5">Maksimal 84 siswa baru</p>
+                  </div>
+                  <div className="p-3 bg-slate-50 border border-slate-155 rounded-xl">
+                    <p className="text-[10px] text-slate-400 uppercase font-black font-sans">Uang Gedung / Studi</p>
+                    <p className="text-sm font-extrabold text-emerald-800 mt-0.5">Gratis (Rp 0,-)</p>
+                    <p className="text-[9.5px] text-slate-450 mt-0.5">Berstandar Bebas Pungutan</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="font-extrabold text-slate-400 uppercase mb-2 text-[10px] tracking-wider font-sans">Alur Pengalihan PSB:</p>
+                  <div className="space-y-2 border-l-2 border-emerald-700/30 pl-4 ml-2">
+                    <div className="relative">
+                      <span className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-emerald-700"></span>
+                      <p className="font-bold text-slate-900 text-[11px]">1. Pendaftaran Online (Gratis)</p>
+                      <p className="text-[10.5px] text-slate-500 leading-snug">Pengisian biodata wali & calon siswa pada aplikasi digital.</p>
+                    </div>
+                    <div className="relative">
+                      <span className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-emerald-700"></span>
+                      <p className="font-bold text-slate-900 text-[11px]">2. Penyerahan Berkas Administrasi</p>
+                      <p className="text-[10.5px] text-slate-500 leading-snug">Wali siswa membawa pasfoto & ijazah RA/TK ke Sekretariat.</p>
+                    </div>
+                    <div className="relative">
+                      <span className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-emerald-700"></span>
+                      <p className="font-bold text-slate-900 text-[11px]">3. Pemetaan Potensi Dasar & Wawancara</p>
+                      <p className="text-[10.5px] text-slate-500 leading-snug">Uji kesiapan asupan emosional anak yang ramah anak (bebas calistung).</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-emerald-50 border border-emerald-150 p-3.5 rounded-xl text-slate-700 leading-relaxed text-[11px] text-left">
+                  <strong className="font-black block text-emerald-850 mb-1 text-[10px]">SYARAT UTAMA:</strong>
+                  Calon siswa berumur minimal 6 tahun pada awal tahun ajaran baru, menyertakan fotokopi Akta Lahir, fotokopi Kartu Keluarga (KK), pasfoto berwarna ukuran 3x4 (2 lembar).
+                </div>
+              </div>
+
+              <div className="mt-6 border-t border-slate-100 pt-4.5 flex justify-between gap-4">
+                <button 
+                  onClick={() => { setActiveQuickAction(null); onNavigate('download'); }}
+                  className="px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold text-[11px] rounded-lg tracking-wide uppercase cursor-pointer"
+                >
+                  Unduh Brosur Lengkap
+                </button>
+                <button 
+                  onClick={() => setActiveQuickAction(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer uppercase tracking-wider"
+                >
+                  Tutup
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

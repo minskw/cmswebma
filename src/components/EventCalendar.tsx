@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Event } from '../types';
 
 interface EventCalendarProps {
-  initialEvents: Event[];
+  initialEvents?: Event[];
 }
 
 interface CalendarItem {
@@ -24,7 +24,7 @@ interface CalendarItem {
   organizer?: string;
 }
 
-export default function EventCalendar({ initialEvents }: EventCalendarProps) {
+export default function EventCalendar({ initialEvents = [] }: EventCalendarProps) {
   // Current active date context for Month view
   const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 5, 9)); // Default to June 2026 to fit local time metadata
   const [selectedDateStr, setSelectedDateStr] = useState<string>("2026-06-12"); // Default highlighted day (Bazar day)

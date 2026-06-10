@@ -6,6 +6,8 @@
 import React, { useState } from 'react';
 import { BookOpen, Calendar, Star, Sparkles, Award, Compass, BookOpenCheck, Layers, Landmark, ShieldCheck, Clock, Printer } from 'lucide-react';
 import { calculateReadingTime } from '../utils/readingTime';
+import EventCalendar from '../components/EventCalendar';
+import MockDb from '../database/mockDb';
 
 interface AkademikProps {
   subPath: string; // "akademik_kurikulum", "akademik_kalender", "akademik_p5ra", "akademik_ekstra", "akademik_perpus"
@@ -37,6 +39,7 @@ function getAkademikReadingTime(subPath: string): number {
 }
 
 export default function Akademik({ subPath, onNavigate }: AkademikProps) {
+  const events = MockDb.getEvents();
   
   const sidebarMenuItems = [
     { label: "Kurikulum Merdeka", path: "akademik_kurikulum" },
@@ -150,17 +153,34 @@ export default function Akademik({ subPath, onNavigate }: AkademikProps) {
 
             {/* 2. Kalender Akademik */}
             {subPath === "akademik_kalender" && (
-              <div className="space-y-6">
-                <h3 className="text-slate-900 text-lg font-bold mb-4">Agenda Kalender Pelaksanaan Belajar Mengajar</h3>
-                <p className="text-xs text-slate-500 mb-6 font-sans">Berikut gambaran tema sirkulasi kegiatan belajar, assesmen kelas, rapat organisasi, and cuti akhir libur sekolah semester ganjil mendatang:</p>
-                
-                <div className="border border-slate-100 rounded-xl overflow-hidden shadow-xs">
-                  {agendaKalender.map((item, idx) => (
-                    <div key={idx} className="grid grid-cols-1 md:grid-cols-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors font-sans p-4 text-xs">
-                      <div className="font-extrabold text-emerald-800 tracking-wider mb-1 md:mb-0 md:col-span-1">{item.bulan}</div>
-                      <div className="text-slate-600 md:col-span-3 leading-relaxed">{item.agenda}</div>
-                    </div>
-                  ))}
+              <div className="space-y-8 animate-fade-in">
+                <div>
+                  <h3 className="text-slate-900 text-lg font-bold mb-2">Kalender Akademik & Agenda Kegiatan</h3>
+                  <p className="text-xs text-slate-500 font-sans leading-relaxed">
+                    Telusuri secara visual agenda bulanan terpadu MIN Singkawang. Anda dapat menyaring agenda berdasarkan kategori kegiatan, ujian berbasis komputer (CBT), serta hari libur nasional keagamaan.
+                  </p>
+                </div>
+
+                {/* Monthly Visual Interactive Calendar */}
+                <div id="visual_academic_calendar_wrapper" className="border border-slate-200/50 rounded-3xl overflow-hidden shadow-xs">
+                  <EventCalendar initialEvents={events} />
+                </div>
+
+                {/* Big Picture Semester Plan */}
+                <div className="pt-4 border-t border-slate-100">
+                  <h4 className="text-slate-900 text-sm font-extrabold mb-1 uppercase tracking-tight">Garis Besar Agenda Semester Ganjil</h4>
+                  <p className="text-[11px] text-slate-450 font-sans mb-4">
+                    Ikhtisar kronologis agenda rujukan kepala madrasah, kementerian agama kota, dan dewan komite sekolah:
+                  </p>
+                  
+                  <div className="border border-slate-150 rounded-2xl overflow-hidden shadow-3xs">
+                    {agendaKalender.map((item, idx) => (
+                      <div key={idx} className="grid grid-cols-1 md:grid-cols-4 border-b border-slate-150 last:border-0 hover:bg-slate-50/50 transition-colors font-sans p-4 text-xs">
+                        <div className="font-extrabold text-emerald-800 tracking-wider mb-1 md:mb-0 md:col-span-1">{item.bulan}</div>
+                        <div className="text-slate-600 md:col-span-3 leading-relaxed font-medium">{item.agenda}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
