@@ -1,0 +1,25 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cms/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!api|assets|favicon.ico|sitemap.xml|rss.xml|feed.xml|robots.txt).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

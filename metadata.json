@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Webiste Madrasah",
+  "description": "Website Resmi Madrasah Ibtidaiyah Negeri Singkawang - Portal Profil, Akademik, Kesiswaan, Berita, Galeri, Layanan Digital, dan PPDB.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

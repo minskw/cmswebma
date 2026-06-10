@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom Rich Text HTML Styles */
+.html-content h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: inherit;
+}
+.html-content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: inherit;
+}
+.html-content p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+.html-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1rem !important;
+}
+.html-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1rem !important;
+}
+.html-content li {
+  margin-bottom: 0.35rem;
+}
+.html-content blockquote {
+  border-left: 4px solid #10b981 !important;
+  padding-left: 1.25rem !important;
+  font-style: italic;
+  color: #475569;
+  margin: 1.5rem 0;
+}
+.dark .html-content blockquote {
+  color: #cbd5e1;
+  border-left-color: #34d399 !important;
+}
+.html-content img {
+  border-radius: 0.75rem;
+  margin: 1.5rem auto;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+.html-content a {
+  color: #10b981;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.html-content a:hover {
+  color: #059669;
+}
+
+/* Ensure smooth scrolling and anti-aliasing */
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: filter 0.2s ease, font-size 0.2s ease;
+}
+
+/* Accessibility Modes */
+html.grayscale-mode {
+  filter: grayscale(100%) !important;
+}
+
+html.invert-mode {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+/* Full-featured High Contrast Mode */
+html.high-contrast-mode {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.high-contrast-mode body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.high-contrast-mode header,
+html.high-contrast-mode nav,
+html.high-contrast-mode footer,
+html.high-contrast-mode div,
+html.high-contrast-mode section,
+html.high-contrast-mode article,
+html.high-contrast-mode aside,
+html.high-contrast-mode main {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-color: #ffffff !important;
+}
+
+html.high-contrast-mode a,
+html.high-contrast-mode button {
+  background-color: #000000 !important;
+  color: #ffff00 !important; /* bright yellow link colors for extreme readability */
+  border: 1px solid #ffffff !important;
+  text-decoration: underline !important;
+}
+
+html.high-contrast-mode a:hover,
+html.high-contrast-mode button:hover {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+}
+
+html.high-contrast-mode input,
+html.high-contrast-mode textarea,
+html.high-contrast-mode select {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+html.high-contrast-mode h1,
+html.high-contrast-mode h2,
+html.high-contrast-mode h3,
+html.high-contrast-mode h4,
+html.high-contrast-mode h5,
+html.high-contrast-mode h6 {
+  color: #ffff00 !important;
+  font-weight: 800 !important;
+}
+
+html.high-contrast-mode p,
+html.high-contrast-mode span,
+html.high-contrast-mode li,
+html.high-contrast-mode td,
+html.high-contrast-mode th {
+  color: #ffffff !important;
+}
+
+html.high-contrast-mode svg {
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+/* Custom CSS for optimizing largest contentful paint and visual transition cues */
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   CSS PRINT OPTIMIZATIONS
+   ========================================== */
+@media print {
+  /* 1. Hide interactive, navigational, and non-content elements */
+  nav,
+  header,
+  footer,
+  aside,
+  form,
+  iframe,
+  #back_to_top_floating_btn,
+  #announcement_ticker,
+  [id^="share_"],
+  [id^="share-"],
+  form[aria-label="Form komentar baru"],
+  .no-print,
+  /* Left navigation sidebar rails */
+  .lg\:col-span-1,
+  /* Buttons, size sliders, theme and accessibility toggles */
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="search"],
+  select,
+  textarea {
+    display: none !important;
+  }
+
+  /* 2. Global Reset for professional ink-friendly printing output */
+  html, 
+  body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    padding: 1.2cm !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
+    filter: none !important; /* Turn off dynamic accessibility filters in printed forms */
+  }
+
+  /* Force light theme colors on print regardless of user preference */
+  .dark,
+  [class*="dark:"] {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  /* 3. Grid-to-Single-Column Flow Expansion */
+  .grid {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* Expand main article column to span full available printing width */
+  .lg\:col-span-3,
+  .lg\:col-span-4,
+  .col-span-3,
+  .max-w-4xl,
+  .max-w-7xl,
+  main,
+  article,
+  #detailed_post_view {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    display: block !important;
+  }
+
+  /* Header banner override (converts white-on-dark-gradient banner card to clean black borderless flat text headers) */
+  .bg-gradient-to-r,
+  .from-emerald-800,
+  .to-emerald-950,
+  .bg-emerald-800,
+  .bg-slate-900 {
+    background: transparent !important;
+    color: #000000 !important;
+    padding: 0 0 12px 0 !important;
+    margin-bottom: 24px !important;
+    border-bottom: 2.5px solid #000000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Guarantee readable text elements inside page-header modules */
+  .bg-gradient-to-r *,
+  .bg-emerald-800 *,
+  .bg-slate-900 * {
+    color: #000000 !important;
+    background: transparent !important;
+  }
+
+  /* 4. Fine-Tuned Typography and Physical Page Constraints */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif !important;
+    font-weight: 800 !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    margin-top: 1.6em !important;
+    margin-bottom: 0.6em !important;
+  }
+
+  h1 {
+    font-size: 20pt !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: 16pt !important;
+    border-bottom: 1px solid #d1d5db !important;
+    padding-bottom: 6px !important;
+  }
+
+  h3 {
+    font-size: 13pt !important;
+  }
+
+  p, li, blockquote, dt, dd {
+    color: #111827 !important;
+    font-size: 10.5pt !important;
+    page-break-inside: avoid !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Bullet lists alignment on prints */
+  ul, ol {
+    margin-left: 24px !important;
+    padding-left: 0 !important;
+  }
+
+  /* 5. Elegant table styling for schedules, files list, structures etc */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 1.8em 0 !important;
+    page-break-inside: auto !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  th, td {
+    border: 1px solid #94a3b8 !important;
+    padding: 8px 12px !important;
+    text-align: left !important;
+    font-size: 9.5pt !important;
+  }
+
+  th {
+    background-color: #f1f5f9 !important;
+    font-weight: 700 !important;
+    color: #000000 !important;
+  }
+
+  /* 6. Optimized Image scaling */
+  img,
+  .OptimizedImage {
+    max-width: 100% !important;
+    max-height: 7.5cm !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 18px auto !important;
+    page-break-inside: avoid !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+  }
+
+  /* 7. Show external link targets transparently next to anchor elements so readers can click them later */
+  a[href^="http"]:after,
+  a[href^="https"]:after {
+    content: " (" attr(href) ")";
+    font-size: 8pt !important;
+    color: #4b5563 !important;
+    word-break: break-all !important;
+  }
+
+  /* Remove link decoration on purely internal JavaScript route navigations */
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+
+  /* Complete animations removal in physical print context */
+  * {
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+
+
